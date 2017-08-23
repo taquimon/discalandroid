@@ -1,6 +1,6 @@
 (function () {
     'use strict';
-
+        
     angular
         .module('app')
         .controller('ProductController', ProductController);
@@ -16,7 +16,8 @@
         initController();
 
         function initController() {            
-            loadAllProducts();
+            loadAllProducts();            
+            $(".select").selectpicker();            
         }
 
         

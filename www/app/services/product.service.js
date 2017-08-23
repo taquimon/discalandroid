@@ -19,7 +19,7 @@
         return service;
 
         function GetAll() {
-            return $http.get('http://discal.host22.com/api/discal/producto');//.then(handleSuccess, handleError('Error getting all products'));
+            return $http.get('http://discal.host22.com/api/discal/producto').then(handleSuccess, handleError('Error getting all products'));
         }
 
         // function GetById(id) {

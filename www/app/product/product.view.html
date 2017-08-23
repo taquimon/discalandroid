@@ -1,8 +1,19 @@
-<h1>Lista de productos</h1>
+<script language="javascript">
+    $(function () {
+        fillProductos();
+    });
 
-<ul>
-<li ng-repeat="product in vm.allProducts">
-    {{product.idProducto}}
-</li>
-</ul>
-{{vm.status}}
+    function fillProductos() {
+        // var options = '';
+        // for (var x = 0; x < json.length; x++) {
+        //     options += '<option value="' + json[x].idProducto + '">' + json[x].descripcion + '</option>';
+        // }
+
+        // $('#productos').html(options);
+        $('.select').selectpicker();
+    }
+</script>
+<h1>Lista de productos</h1>
+<select class=" selectpicker">
+    <option ng-repeat="product in vm.allProducts" value="{{product.idProducto}}">{{product.descripcion}}</option>    
+ </select>
