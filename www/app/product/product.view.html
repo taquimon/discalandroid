@@ -1,19 +1,44 @@
-<script language="javascript">
-    $(function () {
-        fillProductos();
-    });
-
-    function fillProductos() {
-        // var options = '';
-        // for (var x = 0; x < json.length; x++) {
-        //     options += '<option value="' + json[x].idProducto + '">' + json[x].descripcion + '</option>';
-        // }
-
-        // $('#productos').html(options);
-        $('.select').selectpicker();
-    }
-</script>
 <h1>Lista de productos</h1>
-<select class=" selectpicker">
+   
+<!-- <select id="productos">    
     <option ng-repeat="product in vm.allProducts" value="{{product.idProducto}}">{{product.descripcion}}</option>    
- </select>
+ </select> -->
+ <!-- <select class="selectpicker" data-live-search="true" id="productos">               
+    <option class="small-font" data-ng-repeat="product in vm.allProducts" data-select-watcher  data-last="{{$last}}"  value="{{product.idProducto}}">{{product.descripcion}}</option>
+    <option class="small-font" selected value='any'>Anyone</option> 
+</select> -->
+<!-- <select class="form-control  selectpicker"  data-live-search="true" ng-model="subappID" data-ng-options="subapp.ID as subapp.DESCRIPCION for subapp in subapplicationList"> -->
+<!-- <select class="nya-selectpicker" id="numbers">
+    <option ng-repeat="subapp in subapplicationList" value="{{subapp.ID}}">{{subapp.DESCRIPCION}}</option>
+</select> -->
+<p class="alert-info">Single Selection, model is <span>{{model}}</span></p>
+<ol id="singleSelection" class="nya-bs-select" ng-model="model">
+  <li class="nya-bs-option" data-value="a">
+    <a>Alpha</a>
+  </li>
+  <li class="nya-bs-option" data-value="b">
+    <a>Bravo</a>
+  </li>
+  <li class="nya-bs-option" data-value="c">
+    <a>Charlie</a>
+  </li>
+</ol>
+<ol id="multipleSelection" class="nya-bs-select" multiple>
+        <li class="nya-bs-option" data-value="a">
+          <a>Alpha</a>
+        </li>
+        <li class="nya-bs-option" data-value="b">
+          <a>Bravo</a>
+        </li>
+        <li class="nya-bs-option" data-value="c">
+          <a>Charlie</a>
+        </li>
+      </ol>
+ {{subappID}}
+ <div>
+  <ol id="envSelect" class="nya-bs-select" ng-model="environment">
+    <li nya-bs-option="eachEnv in environments">
+      <a>{{ eachEnv.id }}</a>
+    </li>
+  </ol>
+</div>
