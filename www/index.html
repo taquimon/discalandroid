@@ -1,35 +1,345 @@
 ﻿<!DOCTYPE html>
 <html>
+
 <head>
-    <title>Conference Room Booking App - Welcome</title>
+    <title>Bienvenidos a Discal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="css/discal.min.css" rel="stylesheet" />
     <link href="css/jquery.mobile.icons.min.css" rel="stylesheet" />
     <link href="css/jquery.mobile.structure-1.4.5.min.css" rel="stylesheet" />
-     <script src="js/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/datatables.min.css" />
+    <script src="js/jquery.min.js"></script>
     <script src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script src="js/discal.js"></script>
+    <style>
+        table {
+            font-size: 12px;
+        }
+        
+        .ui-grid-a {
+            width: 100%;
+        }
+        
+        #custom-border-radius .ui-btn-icon-notext.ui-corner-all {
+            -webkit-border-radius: .3125em;
+            border-radius: .3125em;
+        }
+        
+        .money {
+            width: 100px;
+        }
+        
+        .holder .ui-slider-switch {
+            width: 12em;
+        }
+        
+        .ui-selectmenu.ui-popup .ui-input-search {
+            margin-left: .5em;
+            margin-right: .5em;
+        }
+        
+        .ui-selectmenu.ui-dialog .ui-content {
+            padding-top: 0;
+        }
+        
+        .ui-selectmenu.ui-dialog .ui-selectmenu-list {
+            margin-top: 0;
+        }
+        
+        .ui-selectmenu.ui-popup .ui-selectmenu-list li.ui-first-child .ui-btn {
+            border-top-width: 1px;
+            -webkit-border-radius: 0;
+            border-radius: 0;
+        }
+        
+        .ui-selectmenu.ui-dialog .ui-header {
+            border-bottom-width: 1px;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            // $(document).on("pagebeforecreate", "#lista_productos", function(event) {                        
+            // $(document).on('pageinit', function() {
+            $('.headerIndex').load('views/header.html')
+            loadProducts();
+            loadPedidos();
+            fillClientes();
+
+            function loadProducts() {
+
+                var url = "http://" + server + "/api/discal/producto/getAjaxListProducts/true";
+                var table = $("#product_table").DataTable({
+                    destroy: true,
+                    paging: true,
+                    info: false,
+                    lengthChange: false,
+                    language: {
+                        "lengthMenu": "Mostrar _MENU_ filas por pagina",
+                        "zeroRecords": "No se encontro datos - lo sentimos",
+                        "info": "Mostrar pagina _PAGE_ de _PAGES_",
+                        "search": "Buscar",
+                        "infoEmpty": "No se encontraron datos",
+                        "infoFiltered": "(filtrar _MAX_ total filas)",
+                        "paginate": {
+                            "first": "Prim.",
+                            "last": "Ult.",
+                            "next": "Sig.",
+                            "previous": "Ant."
+                        },
+                    },
+                    ajax: {
+                        url: url,
+                        dataSrc: 'data',
+                    },
+                    columns: [
+                        // { "data": "idProducto", sDefaultContent: "n/a"}, 
+                        {
+                            "data": "codigoExterno",
+                            sDefaultContent: ""
+                        }, {
+                            "data": "descripcion",
+                            sDefaultContent: ""
+                        }, {
+                            "data": "options",
+                            sDefaultContent: ""
+                        },
+
+                    ],
+                    "fnRowCallback": function(nRow, aoData, iDisplayIndex, iDisplayIndexFull) {
+                        if (aoData.cantidad < 3) {
+                            $('td:eq(3)', nRow).css('background-color', '#F5D167');
+                        } else {
+                            $('td:eq(3)', nRow).css('background-color', '#59BD4D');
+                        }
+                        if (aoData.activo == 0) {
+                            $('td', nRow).css('background-color', '#FC9A9A');
+                        }
+                    },
+                });
+            }
+
+            function loadPedidos() {
+
+                var url = "http://" + server + "/api/discal/pedido/ajaxListOrder/true";
+                var table = $("#pedidos_table").DataTable({
+                    destroy: true,
+                    paging: true,
+                    info: false,
+                    lengthChange: false,
+                    language: {
+                        "lengthMenu": "Mostrar _MENU_ filas por pagina",
+                        "zeroRecords": "No se encontro datos - lo sentimos",
+                        "info": "Mostrar pagina _PAGE_ de _PAGES_",
+                        "search": "Buscar",
+                        "infoEmpty": "No se encontraron datos",
+                        "infoFiltered": "(filtrar _MAX_ total filas)",
+                        "paginate": {
+                            "first": "Prim.",
+                            "last": "Ult.",
+                            "next": "Sig.",
+                            "previous": "Ant."
+                        },
+                    },
+                    ajax: {
+                        url: url,
+                        dataSrc: 'data',
+                    },
+                    columns: [
+                        // { "data": "idProducto", sDefaultContent: "n/a"}, 
+                        {
+                            "data": "numPedido",
+                            sDefaultContent: ""
+                        }, {
+                            "data": "codigoCliente",
+                            sDefaultContent: ""
+                        }, {
+                            "data": "fecha",
+                            sDefaultContent: ""
+                        },
+
+                    ],
+                });
+            }
+
+        });
+
+        function fillClientes() {
+            var count = 0;
+            var output = '';
+            var dataTheme = '';
+            url = "http://" + server + "/api/discal/cliente";
+            $.ajax({
+                url: url,
+                dataType: "json",
+                type: 'GET',
+                success: function(json) {
+                    var options = '';
+                    for (var i = 0; i < json.length; i++) {
+                        options += '<option value="' + json[i].idCliente + '">' + json[i].codigoCliente + " - " + json[i].nombres + " " + json[i].apellidos + '</option>';
+                    }
+
+                    $('#clientes').html(options);
+                    $('#clientes').trigger('change');
+
+                },
+                error: function() {
+                    console.log("error on get clientes");
+                }
+            });
+        }
+    </script>
+    <script src="js/filter.js"></script>
 </head>
 
-<body>
-    <div data-role="page">
-        <div data-role="header" data-theme="c">
+<body class="container">
+    <div data-role="page" id="index">
+        <div data-role="header">
             <h1>Discal</h1>
-            <div data-role="navbar" data-iconpos="left">
-                    <ul>
-                        <li><a href="views/lista_productos.html"  data-icon="shop" class="ui-btn-active">Productos</a></li>
-                        <li><a href="views/lista_pedidos.html" data-icon="tag">Pedidos</a></li>
-                        <li><a href="views/nuevo_pedido.html" data-icon="plus">Nuevo Pedido</a></li>
-                    </ul>
-                </div><!-- /navbar -->
-        </div><!-- /header -->
-        <div role="main" class="ui-content">
-            <h2 class="mc-text-center">Bienvenidos</h2>
-            <p class="mc-top-margin-1-5"><b>Usuarios Existentes</b></p>
+            <div class="headerIndex"></div>
+            <!-- /navbar -->
+        </div>
+        <!-- /header -->
+        <div data-role="content">
+            <h2 class="mc-text-center">Bienvenidos a Discal Android</h2>
+            <!-- <p class="mc-top-margin-1-5"><b>Usuarios Existentes</b></p>
             <a href="sign-in.html" class="ui-btn ui-btn-b ui-corner-all">Sign In</a>
-            <!-- <p class="mc-top-margin-1-5"><b>Crear Cuenta</b></p>
+            <p class="mc-top-margin-1-5"><b>Crear Cuenta</b></p>
             <a href="sign-up.html" class="ui-btn ui-btn-b ui-corner-all">Sign Up</a> -->
-            <p></p>
-        </div><!-- /content -->
-    </div><!-- /page -->
+        </div>
+        <!-- /content -->
+    </div>
+    <!-- index page -->
+
+    <!-- lista productos page -->
+    <div data-role="page" id="lista_productos">
+        <div data-role="header">
+            <h1>Productos</h1>
+            <div class="headerIndex"></div>
+        </div>
+        <!-- /navbar -->
+        <!-- </div> -->
+        <!-- /header -->
+        <div data-role="content">
+            <h2>Lista de Productos</h2>
+            <table id="product_table" cellspacing="0" width="100%" class="cell-border">
+                <thead>
+                    <tr>
+                        <th style="width:5%">Codigo</th>
+                        <th style="width:50%">Descripcion</th>
+                        <th style="width:45%">Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <!-- /content -->
+        <div data-role="footer" data-position="fixed">
+            <h4>Discal 2017</h4>
+        </div>
+        <!-- /footer -->
+    </div>
+    <!-- lista productos page -->
+
+    <!-- lista de pedidos page -->
+    <div data-role="page" id="lista_pedidos">
+
+        <div data-role="header">
+            <h1>Lista de Pedidos</h1>
+            <div class="headerIndex"></div>
+        </div>
+        <!-- /header -->
+
+        <div data-role="content">
+            <h2>Lista de Pedidos</h2>
+            <table id="pedidos_table" cellspacing="0" width="100%" class="cell-border">
+                <thead>
+                    <tr>
+                        <th style="width:5%">Nro. Pedido</th>
+                        <th style="width:50%">Cliente</th>
+                        <th style="width:45%">Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+        </div>
+        <!-- /content -->
+
+
+        <div data-role="footer">
+            <h4>Discal 2017</h4>
+        </div>
+        <!-- /footer -->
+    </div>
+    <!-- lista de pedidos page -->
+    <div data-role="page" id="nuevo_pedido">
+        <div data-role="header">
+            <h1>Pedidos</h1>
+            <div class="headerIndex"></div>
+        </div>
+        <!-- /header -->
+        <div data-role="content">
+            <h2>Nuevo Pedido</h2>
+            <div class="ui-grid-a">
+                <div class="ui-block-a">
+                    <label for="name">Cliente:</label>
+                    <form>
+                        <select id="clientes" data-native-menu="false"></select>
+                    </form>
+                </div>
+                <div class="ui-block-b">
+                    <label for="name">Fecha:</label>
+                    <input type="date" name="name" id="name" value="" data-mini="true" />
+                </div>
+            </div>
+            <div class="ui-grid-a">
+                <div class="ui-block-a">
+                    <label for="name">Producto(s):</label>
+                    <select id="productos" data-native-menu="false" class="filterable-select" data-mini="true" multiple>
+                        <option value="CONTADO">Contado</option>
+                        <option value="CONTADO">Contado</option>
+                        <option value="CONTADO">Contado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="holder">
+                <label for="tipoPedido">Tipo Pedido:</label>
+                <select name="tipoPedido" id="tipoPedido" data-role="slider" data-mini="true">
+                    <option value="CONTADO">Contado</option>
+                    <option value="CREDITO">Credito</option>
+                </select>
+            </div>
+
+            <div class="ui-grid-b">
+                <div class="ui-block-a">
+                    <label for="name">Total Bruto:</label>
+                    <input type="number" name="name" id="totalBruto" value="" data-wrapper-class="money" disabled data-mini="true" />
+                </div>
+                <div class="ui-block-b">
+                    <label for="name">Descuento:</label>
+                    <input type="number" name="name" id="descuento" value="" data-wrapper-class="money" data-mini="true" />
+                </div>
+                <div class="ui-block-c">
+                    <label for="name">Valor Total:</label>
+                    <input type="number" name="name" id="total" value="" data-wrapper-class="money" data-mini="true" disabled/>
+                </div>
+            </div>
+            <div data-role="controlgroup" data-type="horizontal">
+                <a href="#" class="ui-btn ui-icon-shop ui-btn-icon-left ui-corner-all ui-shadow ui-mini">Guardar</a>
+                <a href="#" class="ui-btn ui-icon-delete ui-btn-icon-left ui-corner-all ui-shadow ui-mini">Cancelar</a>
+            </div>
+        </div>
+        <!-- /content -->
+
+        <div data-role="footer" data-position="fixed">
+            <h4>Discal 2017</h4>
+        </div>
+        <!-- /footer -->
+    </div>
+    <!-- /page -->
+    <script type="text/javascript" src="js/datatables.min.js"></script>
 </body>
+
 </html>

@@ -1,91 +1,74 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Pedidos</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="../css/discal.min.css" rel="stylesheet" />
     <link href="../css/jquery.mobile.icons.min.css" rel="stylesheet" />
     <link href="../css/jquery.mobile.structure-1.4.5.min.css" rel="stylesheet" />
-     <script src="../js/jquery.min.js"></script>
+    <script src="../js/jquery.min.js"></script>
     <script src="../js/jquery.mobile-1.4.5.min.js"></script>
     <style>
-    .money {
-        width: 100px;
-    }        
-    .holder .ui-slider-switch { 
-        width:12em; 
-    } 
-    .ui-selectmenu.ui-popup .ui-input-search {
-        margin-left: .5em;
-        margin-right: .5em;
-    }
-    .ui-selectmenu.ui-dialog .ui-content {
-        padding-top: 0;
-    }
-    .ui-selectmenu.ui-dialog .ui-selectmenu-list {
-        margin-top: 0;
-    }
-    .ui-selectmenu.ui-popup .ui-selectmenu-list li.ui-first-child .ui-btn {
-        border-top-width: 1px;
-        -webkit-border-radius: 0;
-        border-radius: 0;
-    }
-    .ui-selectmenu.ui-dialog .ui-header {
-        border-bottom-width: 1px;
-    }
+        .money {
+            width: 100px;
+        }
+        
+        .holder .ui-slider-switch {
+            width: 12em;
+        }
+        
+        .ui-selectmenu.ui-popup .ui-input-search {
+            margin-left: .5em;
+            margin-right: .5em;
+        }
+        
+        .ui-selectmenu.ui-dialog .ui-content {
+            padding-top: 0;
+        }
+        
+        .ui-selectmenu.ui-dialog .ui-selectmenu-list {
+            margin-top: 0;
+        }
+        
+        .ui-selectmenu.ui-popup .ui-selectmenu-list li.ui-first-child .ui-btn {
+            border-top-width: 1px;
+            -webkit-border-radius: 0;
+            border-radius: 0;
+        }
+        
+        .ui-selectmenu.ui-dialog .ui-header {
+            border-bottom-width: 1px;
+        }
     </style>
     <script type="text/javascript">
+        $(document).on('pageinit', "#new_order", function() {
+            fillClientes();
+        });
 
-        function fillClientes(){
-            var count = 0;            
-                var output = '';
-                var dataTheme = '';
-                url = "http://discal.host22.com/api/discal/cliente";
-                $.ajax({
-                    url: url,                    
-                    dataType: "json",
-                    type: 'GET',
-                    success: function (json) {
-                        var options = '';
-                        for(var i=0; i< json.length; i++) {
-                            console.log(json[i].codigoCliente);
-                            options += '<option value="' + json[i].idCliente + '">' +  json[i].codigoCliente + " - " +json[i].nombres + " "+  json[i].apellidos  + '</option>';
-                        }
-                        
-                        $('#filter-menu').html(options);                                    
-                        $('#filter-menu').trigger('change');
-
-                
-
-                //         $("#club_table").DataTable().ajax.reload(null,false);
-                                    
-                // $.each(data, function(key, value) {
-                //     dataTheme = 'data-theme="b"';
-
-                //     if(value.documento == 'SI') {
-                //         dataTheme = 'data-theme="a"';
-                //     }
-                //     if(value.club == club) {
-
-                //      output += '<li ' + dataTheme + '><h3>' +
-                //      value.name + ' ' + value.last +  '</h3><p><strong>CI: ' +
-                //      value.ci + '  Kardex: ' + value.documento + '</strong></p><p><strong>Parentesco: ' +
-                //      value.parentesco + '</strong></p><p>Notas: ' +
-                //      value.notas + '</p><p class="ui-li-aside"><strong> Fecha Nac.' +
-                //      value.fechanacimiento + '</strong></p></li>';
-                //     count = count + 1;
-                //     }
-                // });
-                // first = "<li data-role='list-divider'><a href='#' onclick=\"javascript:fillClub('" +
-                //     club + "');\" data-role='button'>" + club + "</a><span class='ui-li-count'>" + count + "</span></li>";
-                // var clubNew = club.replace(/\s+/g, '');
-
-                // $('#'+ clubNew).html(output).listview("refresh");
-                // $('#'+ clubNew + 'Count').html(count);
-            },
-                    error: function () {                        
-                            alert("error on get clientes");
+        function fillClientes() {
+            var count = 0;
+            var output = '';
+            var dataTheme = '';
+            url = "http://discal.host22.com/api/discal/cliente";
+            $.ajax({
+                url: url,
+                dataType: "json",
+                type: 'GET',
+                success: function(json) {
+                    var options = '';
+                    for (var i = 0; i < json.length; i++) {
+                        console.log(json[i].codigoCliente);
+                        options += '<option value="' + json[i].idCliente + '">' + json[i].codigoCliente + " - " + json[i].nombres + " " + json[i].apellidos + '</option>';
                     }
+
+                    $('#filter-menu').html(options);
+                    $('#filter-menu').trigger('change');
+
+                },
+                error: function() {
+                    alert("error on get clientes");
+                }
             });
         }
 
@@ -93,25 +76,27 @@
             // "filter-menu-menu" is the ID generated for the listview when it is created
             // by the custom selectmenu plugin. Upon creation of the listview widget we
             // want to prepend an input field to the list to be used for a filter.
-            .on( "listviewcreate", "#filter-menu-menu", function( e ) {
+            .on("listviewcreate", "#filter-menu-menu", function(e) {
                 var input,
-                    listbox = $( "#filter-menu-listbox" ),
-                    form = listbox.jqmData( "filter-form" ),
-                    listview = $( e.target );
+                    listbox = $("#filter-menu-listbox"),
+                    form = listbox.jqmData("filter-form"),
+                    listview = $(e.target);
                 // We store the generated form in a variable attached to the popup so we
                 // avoid creating a second form/input field when the listview is
                 // destroyed/rebuilt during a refresh.
-                if ( !form ) {
-                    input = $( "<input data-type='search'></input>" );
-                    form = $( "<form></form>" ).append( input );
+                if (!form) {
+                    input = $("<input data-type='search'></input>");
+                    form = $("<form></form>").append(input);
                     input.textinput();
-                    $( "#filter-menu-listbox" )
-                        .prepend( form )
-                        .jqmData( "filter-form", form );
+                    $("#filter-menu-listbox")
+                        .prepend(form)
+                        .jqmData("filter-form", form);
                 }
                 // Instantiate a filterable widget on the newly created listview and
                 // indicate that the generated input is to be used for the filtering.
-                listview.filterable({ input: input });
+                listview.filterable({
+                    input: input
+                });
             })
             // The custom select list may show up as either a popup or a dialog,
             // depending how much vertical room there is on the screen. If it shows up
@@ -121,90 +106,105 @@
             //
             // After the dialog is closed, the form containing the filter input is
             // transferred back into the popup.
-            .on( "pagebeforeshow pagehide", "#filter-menu-dialog", function( e ) {
-                var form = $( "#filter-menu-listbox" ).jqmData( "filter-form" ),
-                    placeInDialog = ( e.type === "pagebeforeshow" ),
-                    destination = placeInDialog ? $( e.target ).find( ".ui-content" ) : $( "#filter-menu-listbox" );
+            .on("pagebeforeshow pagehide", "#filter-menu-dialog", function(e) {
+                var form = $("#filter-menu-listbox").jqmData("filter-form"),
+                    placeInDialog = (e.type === "pagebeforeshow"),
+                    destination = placeInDialog ? $(e.target).find(".ui-content") : $("#filter-menu-listbox");
                 form
-                    .find( "input" )
+                    .find("input")
                     // Turn off the "inset" option when the filter input is inside a dialog
                     // and turn it back on when it is placed back inside the popup, because
                     // it looks better that way.
-                    .textinput( "option", "inset", !placeInDialog )
+                    .textinput("option", "inset", !placeInDialog)
                     .end()
-                    .prependTo( destination );
+                    .prependTo(destination);
             });
-        </script>
+    </script>
 </head>
 
-<body onload="fillClientes();" class="ui-mobile-viewport">
-    <div data-role="page">
+<body class="ui-mobile-viewport">
+    <div data-role="page" id="new_order">
 
         <div data-role="header">
             <h1>Pedidos</h1>
-            <div data-role="navbar" data-iconpos="left">
-                    <ul>
-                        <li><a href="lista_productos.html"  data-icon="shop" class="ui-btn-active">Productos</a></li>
-                        <li><a href="lista_pedidos.html" data-icon="tag">Pedidos</a></li>
-                        <li><a href="nuevo_pedido.html" data-icon="plus">Nuevo Pedido</a></li>
-                    </ul>
-                </div><!-- /navbar -->
-        </div><!-- /header -->
+            <div data-role="navbar">
+                <ul>
+                    <li>
+                        <a href="../index.html" data-icon="home"></a>
+                    </li>
+                    <li>
+                        <a href="lista_productos.html" data-icon="grid"></a>
+                    </li>
+                    <li>
+                        <a href="lista_pedidos.html" data-icon="tag"></a>
+                    </li>
+                    <li>
+                        <a href="nuevo_pedido.html" data-icon="plus" class="ui-btn-active"></a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /navbar -->
+        </div>
+        <!-- /header -->
 
         <div role="main" class="ui-content">
             <h2>Nuevo Pedido</h2>
             <div class="ui-grid-a">
-                    <div class="ui-block-a">
-                            <label for="name">Cliente:</label>
-                            <select id="filter-menu" data-native-menu="false" data-mini="true"></select>                            
-                    </div>                    
-                    <div class="ui-block-b">
-                            <label for="name">Fecha:</label>
-                            <input type="date" name="name" id="name" value="" data-mini="true" />
-                    </div>
-            </div>                
+                <div class="ui-block-a">
+                    <label for="name">Cliente:</label>
+                    <select id="filter-menu" data-native-menu="false" data-mini="true"></select>
+                </div>
+                <div class="ui-block-b">
+                    <label for="name">Fecha:</label>
+                    <input type="date" name="name" id="name" value="" data-mini="true" />
+                </div>
+            </div>
             <div class="ui-grid-a">
-                    <div class="ui-block-a">
-                            <label for="name">Producto(s):</label>
-                            <select id="productos" data-native-menu="false" multiple>
+                <div class="ui-block-a">
+                    <label for="name">Producto(s):</label>
+                    <select id="productos" data-native-menu="false" multiple>
                                     <option value="CONTADO">Contado</option>
                                     <option value="CONTADO">Contado</option>
                                     <option value="CONTADO">Contado</option>
-                                </select>                            
-                    </div>                              
-            </div>                
-            <div class="holder">                    
-                            <label for="tipoPedido">Tipo Pedido:</label>                            
-                            <select name="tipoPedido" id="tipoPedido" data-role="slider" data-mini="true">
+                                </select>
+                </div>
+            </div>
+            <div class="holder">
+                <label for="tipoPedido">Tipo Pedido:</label>
+                <select name="tipoPedido" id="tipoPedido" data-role="slider" data-mini="true">
                                     <option value="CONTADO">Contado</option>
                                     <option value="CREDITO">Credito</option>
-                            </select>                                                                      
-            </div>                
-            
+                            </select>
+            </div>
+
             <div class="ui-grid-b">
-                    <div class="ui-block-a">
-                            <label for="name">Total Bruto:</label>
-                            <input type="number" name="name" id="name" value=""  data-wrapper-class="money" disabled data-mini="true"/>                        
-                    </div>                    
-                    <div class="ui-block-b">
-                            <label for="name">Descuento:</label>
-                            <input type="number" name="name" id="name" value=""  data-wrapper-class="money" data-mini="true"/>                    
-                    </div>
-                    <div class="ui-block-c">
-                            <label for="name">Valor Total:</label>
-                            <input type="number" name="name" id="name" value=""  data-wrapper-class="money" data-mini="true" disabled/>                        
-                    </div>
-                </div>    
-                <div data-role="controlgroup" data-type="horizontal">
-                    <a href="#" class="ui-btn ui-icon-shop ui-btn-icon-left ui-corner-all ui-shadow ui-mini">Guardar</a>   
-                    <a href="#" class="ui-btn ui-icon-delete ui-btn-icon-left ui-corner-all ui-shadow ui-mini">Cancelar</a>
+                <div class="ui-block-a">
+                    <label for="name">Total Bruto:</label>
+                    <input type="number" name="name" id="totalBruto" value="" data-wrapper-class="money" disabled data-mini="true" />
                 </div>
-        </div><!-- /content -->
+                <div class="ui-block-b">
+                    <label for="name">Descuento:</label>
+                    <input type="number" name="name" id="descuento" value="" data-wrapper-class="money" data-mini="true" />
+                </div>
+                <div class="ui-block-c">
+                    <label for="name">Valor Total:</label>
+                    <input type="number" name="name" id="total" value="" data-wrapper-class="money" data-mini="true" disabled/>
+                </div>
+            </div>
+            <div data-role="controlgroup" data-type="horizontal">
+                <a href="#" class="ui-btn ui-icon-shop ui-btn-icon-left ui-corner-all ui-shadow ui-mini">Guardar</a>
+                <a href="#" class="ui-btn ui-icon-delete ui-btn-icon-left ui-corner-all ui-shadow ui-mini">Cancelar</a>
+            </div>
+        </div>
+        <!-- /content -->
 
 
         <div data-role="footer" data-position="fixed">
             <h4>Discal 2017</h4>
-        </div><!-- /footer -->
-    </div><!-- /page -->
+        </div>
+        <!-- /footer -->
+    </div>
+    <!-- /page -->
 </body>
+
 </html>

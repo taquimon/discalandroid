@@ -1,111 +1,144 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Lista de Productos</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="../css/discal.min.css" rel="stylesheet" />
     <link href="../css/jquery.mobile.icons.min.css" rel="stylesheet" />
     <link href="../css/jquery.mobile.structure-1.4.5.min.css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="../css/datatables.min.css"/>    
-     <script src="../js/jquery.min.js"></script>
-    <script src="../js/jquery.mobile-1.4.5.min.js"></script>    
-    <script type="text/javascript" src="../js/datatables.min.js"></script>
-<style>
-    table {
-        font-size: 12px;
-    }
-</style>     
-<script  type="text/javascript">
-    $(document).ready(function() {        
-        var url = "http://discal.host22.com/producto/ajaxListProduct";
-        var table = $("#product_table").DataTable({
-            destroy: true,
-            paging: true,
-            info: false,            
-            language: {
-            "lengthMenu": "Mostrar _MENU_ filas por pagina",
-            "zeroRecords": "No se encontro datos - lo sentimos",
-            "info": "Mostrar pagina _PAGE_ de _PAGES_",
-            "search": "Buscar",
-            "infoEmpty": "No se encontraron datos",
-            "infoFiltered": "(filtrar _MAX_ total filas)",
-            "paginate": {
-                "first":      "Prim.",
-                "last":       "Ult.",
-                "next":       "Sig.",
-                "previous":   "Ant."
-            },
-            },            
-            ajax: {
-                url: url,
-                dataSrc: 'data',                
-            },
-            columns: [
-                // { "data": "idProducto", sDefaultContent: "n/a"}, 
-                { "data": "codigoExterno", sDefaultContent: ""}, 
-                { "data": "descripcion", sDefaultContent: ""},
-                // { "data": "cantidad", sDefaultContent: ""}, 
-                // { "data": "unidadVenta", sDefaultContent: ""}, 
-                // { "data": "numeroUnidades", sDefaultContent: ""}, 
-                // { "data": "precioUnitario", sDefaultContent: ""},
-                // { "data": "status", sDefaultContent: ""},
-                { "data": "options", sDefaultContent: ""},
+    <link rel="stylesheet" type="text/css" href="../css/datatables.min.css" />
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/jquery.mobile-1.4.5.min.js"></script>
+    <style>
+        table {
+            font-size: 12px;
+        }
+        
+        .ui-grid-a {
+            width: 100%;
+        }
+        
+        #custom-border-radius .ui-btn-icon-notext.ui-corner-all {
+            -webkit-border-radius: .3125em;
+            border-radius: .3125em;
+        }
+    </style>
+    <script>
+        // $(document).ready(function() {
+        $(document).on("pagebeforecreate", "#lista_productos", function(event) {
+            // $(document).on('pageinit', function() {
+            var url = "http://discal.host22.com/producto/ajaxListProduct";
+            var table = $("#product_table").DataTable({
+                destroy: true,
+                paging: true,
+                info: false,
+                language: {
+                    "lengthMenu": "Mostrar _MENU_ filas por pagina",
+                    "zeroRecords": "No se encontro datos - lo sentimos",
+                    "info": "Mostrar pagina _PAGE_ de _PAGES_",
+                    "search": "Buscar",
+                    "infoEmpty": "No se encontraron datos",
+                    "infoFiltered": "(filtrar _MAX_ total filas)",
+                    "paginate": {
+                        "first": "Prim.",
+                        "last": "Ult.",
+                        "next": "Sig.",
+                        "previous": "Ant."
+                    },
+                },
+                ajax: {
+                    url: url,
+                    dataSrc: 'data',
+                },
+                columns: [
+                    // { "data": "idProducto", sDefaultContent: "n/a"}, 
+                    {
+                        "data": "codigoExterno",
+                        sDefaultContent: ""
+                    }, {
+                        "data": "descripcion",
+                        sDefaultContent: ""
+                    },
+                    // { "data": "cantidad", sDefaultContent: ""}, 
+                    // { "data": "unidadVenta", sDefaultContent: ""}, 
+                    // { "data": "numeroUnidades", sDefaultContent: ""}, 
+                    // { "data": "precioUnitario", sDefaultContent: ""},
+                    // { "data": "status", sDefaultContent: ""},
+                    {
+                        "data": "options",
+                        sDefaultContent: ""
+                    },
 
-            ],
-            "fnRowCallback": function( nRow, aoData, iDisplayIndex, iDisplayIndexFull ) {                
-                    if ( aoData.cantidad < 3 )
-                    {
+                ],
+                "fnRowCallback": function(nRow, aoData, iDisplayIndex, iDisplayIndexFull) {
+                    if (aoData.cantidad < 3) {
                         $('td:eq(3)', nRow).css('background-color', '#F5D167');
-                    }
-                    else
-                    {
+                    } else {
                         $('td:eq(3)', nRow).css('background-color', '#59BD4D');
                     }
-                    if ( aoData.activo == 0 )
-                    {
+                    if (aoData.activo == 0) {
                         $('td', nRow).css('background-color', '#FC9A9A');
                     }
-            },
-        });                                
+                },
+            });
 
-    });   
-</script>
+        });
+    </script>
 </head>
-<body class="ui-mobile-viewport">
-        <div data-role="page">
-            <div data-role="header">
-                <h1>Productos</h1>
-                <div data-role="navbar" data-iconpos="left">
-                        <ul>
-                            <li><a href="lista_productos.html"  data-icon="shop" class="ui-btn-active">Productos</a></li>
-                            <li><a href="lista_pedidos.html" data-icon="tag">Pedidos</a></li>
-                            <li><a href="nuevo_pedido.html" data-icon="plus">Nuevo Pedido</a></li>
-                        </ul>
-                    </div><!-- /navbar -->
-            </div><!-- /header -->
-            <div role="main" class="ui-content">
-                    <h2>Lista de Productos</h2>
-                    <table id="product_table" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <!-- <th style="width:5%">Id</th> -->
-                                    <th style="width:10%">Codigo</th>
-                                    <th style="width:30%">Descripcion</th>
-                                    <!-- <th style="width:5%">Cantidad</th> -->
-                                    <!-- <th style="width:10%">Unidad de Venta</th> -->
-                                    <!-- <th style="width:10%">Nº de UN.</th> -->
-                                    <!-- <th style="width:10%">Precio Unitario</th>                             -->
-                                    <!-- <th style="width:10%">Estado</th> -->
-                                    <th style="width:20%">Opciones</th>                            
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div><!-- /content -->                                        
+
+<body>
+    <div data-role="page" id="lista_productos">
+        <div data-role="header">
+            <h1>Productos</h1>
+            <div data-role="navbar">
+                <ul>
+                    <li>
+                        <a href="../index.html" data-icon="home"></a>
+                    </li>
+                    <li>
+                        <a href="lista_productos.html" data-icon="grid" class="ui-btn-active"></a>
+                    </li>
+                    <li>
+                        <a href="lista_pedidos.html" data-icon="tag"></a>
+                    </li>
+                    <li>
+                        <a href="nuevo_pedido.html" data-icon="plus"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- /navbar -->
+        <!-- </div> -->
+        <!-- /header -->
+        <div role="main" class="ui-content">
+            <h2>Lista de Productos</h2>
+            <table id="product_table" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <!-- <th style="width:5%">Id</th> -->
+                        <th style="width:5%">Codigo</th>
+                        <th style="width:50%">Descripcion</th>
+                        <!-- <th style="width:5%">Cantidad</th> -->
+                        <!-- <th style="width:10%">Unidad de Venta</th> -->
+                        <!-- <th style="width:10%">Nº de UN.</th> -->
+                        <!-- <th style="width:10%">Precio Unitario</th>                             -->
+                        <!-- <th style="width:10%">Estado</th> -->
+                        <th style="width:45%">Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <!-- /content -->
         <div data-role="footer" data-position="fixed">
             <h4>Discal 2017</h4>
-        </div><!-- /footer -->
-    </div><!-- /page -->
+        </div>
+        <!-- /footer -->
+    </div>
+    <!-- /page -->
+    <script type="text/javascript" src="../js/datatables.min.js"></script>
 </body>
+
 </html>
